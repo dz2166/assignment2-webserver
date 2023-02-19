@@ -31,6 +31,10 @@ def webServer(port=13331):
       outputdata = b"Content-Type: text/html; charset=UTF-8\r\n"
       #Fill in start -This variable can store your headers you want to send for any valid or invalid request. 
       #Content-Type above is an example on how to send a header as bytes
+      response = "HTTP/1.1 200 OK\r\n"
+      response += outputdata
+      response += "\r\n"
+      connectionSocket.send(response.encode())
       #Fill in end
 
       #Send an HTTP header line into socket for a valid request. What header should be sent for a response that is ok? 
@@ -43,18 +47,22 @@ def webServer(port=13331):
       #Send the content of the requested file to the client
       for i in f: #for line in file
         #Fill in start - send your html file contents #Fill in end 
+      connectionSocket.send(i)
       connectionSocket.close() #closing the connection socket
       
     except Exception as e:
       # Send response message for invalid request due to the file not being found (404)
       #Fill in start
-
+      response = "HTTP/1.1 404 Not Found\r\n"
+      response += "\r\n"
+      connectionSocket.send(response.encode())
       #Fill in end
 
 
       #Close client socket
       #Fill in start
-
+      serverSocket.close()
+      sys.exit() 
       #Fill in end
 
   #Commenting out the below, as its technically not required and some students have moved it erroneously in the While loop. DO NOT DO THAT OR YOURE GONNA HAVE A BAD TIME.
