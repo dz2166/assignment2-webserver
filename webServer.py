@@ -4,55 +4,62 @@ from socket import *
 import sys
 
 def webServer(port=13331):
-    serverSocket = socket(AF_INET, SOCK_STREAM)
+  serverSocket = socket(AF_INET, SOCK_STREAM)
   
-    # Prepare a server socket
-    serverSocket.bind(("", port))
+  #Prepare a server socket
+  serverSocket.bind(("", port))
   
-    # Start listening on the serverSocket
-    serverSocket.listen(1)
+  #Fill in start
 
-    while True:
-        # Establish the connection
-        print('Ready to serve...')
-        connectionSocket, addr = serverSocket.accept()
+  #Fill in end
 
-        try:
-            message = connectionSocket.recv(1024).decode()
-            filename = message.split()[1]
+  while True:
+    #Establish the connection
+    
+    print('Ready to serve...')
+    connectionSocket, addr = #Fill in start -are you accepting connections?     #Fill in end
+    
+    try:
+      message = #Fill in start -a client is sending you a message   #Fill in end 
+      filename = message.split()[1]
       
-            # Open the client requested file
-            # 'rb' opens the file in binary mode so it can be sent through a socket
-            f = open(filename[1:], 'rb')
+      #opens the client requested file. 
+      #Plenty of guidance online on how to open and read a file in python. How should you read it though if you plan on sending it through a socket?
+      f = open(filename[1:], #fill in start #fill in end)
+      #fill in end
+      
+      outputdata = b"Content-Type: text/html; charset=UTF-8\r\n"
+      #Fill in start -This variable can store your headers you want to send for any valid or invalid request. 
+      #Content-Type above is an example on how to send a header as bytes
+      #Fill in end
 
-            # Prepare the header to be sent with the response
-            outputdata = b"Content-Type: text/html; charset=UTF-8\r\n"
-            
-            # Store the header information in the response variable
-            response = "HTTP/1.1 200 OK\r\n"
-            response += outputdata
-            response += "\r\n"
-            connectionSocket.send(response.encode())
+      #Send an HTTP header line into socket for a valid request. What header should be sent for a response that is ok? 
+      #Note that a complete header must end with a blank line, creating the four-byte sequence "\r\n\r\n" Refer to https://w3.cs.jmu.edu/kirkpams/OpenCSF/Books/csf/html/TCPSockets.html
+      #Fill in start
 
-            # Send the content of the requested file to the client
-            for i in f:
-                connectionSocket.send(i)
-            f.close()
+      #Fill in end
+               
 
-            # Close the connection socket
-            connectionSocket.close()
+      #Send the content of the requested file to the client
+      for i in f: #for line in file
+        #Fill in start - send your html file contents #Fill in end 
+      connectionSocket.close() #closing the connection socket
+      
+    except Exception as e:
+      # Send response message for invalid request due to the file not being found (404)
+      #Fill in start
 
-        except IOError:
-            # Send response message for file not found (404)
-            response = "HTTP/1.1 404 Not Found\r\n\r\n"
-            connectionSocket.send(response.encode())
+      #Fill in end
 
-            # Close the client socket
-            connectionSocket.close()
 
-    # Close the server socket
-    serverSocket.close()
-    sys.exit()
+      #Close client socket
+      #Fill in start
+
+      #Fill in end
+
+  #Commenting out the below, as its technically not required and some students have moved it erroneously in the While loop. DO NOT DO THAT OR YOURE GONNA HAVE A BAD TIME.
+  #serverSocket.close()
+  #sys.exit()  # Terminate the program after sending the corresponding data
 
 if __name__ == "__main__":
-    webServer(13331)
+  webServer(13331)
