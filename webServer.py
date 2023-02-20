@@ -21,7 +21,7 @@ def webServer(port=13331):
 
         try:
             message = connectionSocket.recv(1024).decode()
-            filename = "file:///C:/Users/david/Desktop/Prof.%20Materials/NYU/Computer%20Networking/GitHub/assignment2-webserver-main/assignment2-webserver-main/helloworld.html"
+            filename = "helloworld.html"
 
             # opens the client requested file.
             # Plenty of guidance online on how to open and read a file in python. How should you read it though if you plan on sending it through a socket?
@@ -56,4 +56,4 @@ def webServer(port=13331):
 
 
 if __name__ == "__main__":
-    webServer(13331)
+    webServer(8080)
