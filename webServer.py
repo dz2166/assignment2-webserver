@@ -10,67 +10,53 @@ def webServer(port=13331):
     # Prepare a server socket
     serverSocket.bind(("", port))
 
-    # Fill in start
+    # Listen for incoming connections
     serverSocket.listen(1)
-    # Fill in end
 
     while True:
         # Establish the connection
         print('Ready to serve...')
-        connectionSocket, addr = serverSocket.accept() #Fill in start -are you accepting connections?     #Fill in end
+        connectionSocket, addr = serverSocket.accept()
 
         try:
-            message = connectionSocket.recv(1024).decode() #Fill in start -a client is sending you a message   #Fill in end
+            # Receive the client request message
+            message = connectionSocket.recv(1024).decode()
+
+            # Extract the requested filename from the message
             filename = "helloworld.html"
 
-            # opens the client requested file.
-            # Plenty of guidance online on how to open and read a file in python. How should you read it though if you plan on sending it through a socket?
-            f = open(filename, "rb") #fill in start #fill in end)
-            # fill in end
+            # Open the file and read its contents
+            with open(filename, "rb") as f:
+                file_data = f.read()
 
-            outputdata = b"HTTP/1.1 200 OK\r\n"
-            outputdata += b"Content-Type: text/html; charset=UTF-8\r\n\r\n"
-            # Fill in start -This variable can store your headers you want to send for any valid or invalid request.
-            # Content-Type above is an example on how to send a header as bytes
-            # Fill in end
+            # Build the HTTP response message
+            response_header = b"HTTP/1.1 200 OK\r\n"
+            response_header += b"Content-Type: text/html; charset=UTF-8\r\n"
+            response_header += b"Content-Length: " + str(len(file_data)).encode() + b"\r\n"
+            response_header += b"\r\n"
 
-            # Send an HTTP header line into socket for a valid request. What header should be sent for a response that is ok?
-            # Note that a complete header must end with a blank line, creating the four-byte sequence "\r\n\r\n" Refer to https://w3.cs.jmu.edu/kirkpams/OpenCSF/Books/csf/html/TCPSockets.html
-            # Fill in start
+            # Send the HTTP response message header to the client
+            connectionSocket.send(response_header)
 
-            # Fill in end
+            # Send the file contents to the client
+            connectionSocket.send(file_data)
 
-            # Send an HTTP header line into socket for a valid request.
-            connectionSocket.send(outputdata)
-
-            # Send the content of the requested file to the client
-            for i in f:  # for line in file
-                connectionSocket.send(i)
-
-            f.close()  # close the file
-
-            # Closing the connection socket after sending the file
+            # Close the connection socket
             connectionSocket.close()
 
         except Exception as e:
-            # Send response message for invalid request due to the file not being found (404)
+            # Send a 404 response message for invalid requests
+            error_message = b"<html><body><h1>404 Not Found</h1></body></html>"
+            response_header = b"HTTP/1.1 404 Not Found\r\n"
+            response_header += b"Content-Type: text/html; charset=UTF-8\r\n"
+            response_header += b"Content-Length: " + str(len(error_message)).encode() + b"\r\n"
+            response_header += b"\r\n"
+            response_data = response_header + error_message
 
-            # Fill in start
-            # Fill in end
+            # Send the HTTP response message to the client
+            connectionSocket.send(response_data)
 
-            # Close client socket
-            # Fill in start
-            outputdata = b"HTTP/1.1 404 Not Found\r\n\r\n"
-            connectionSocket.send(outputdata)
-
-            # Fill in end
-
-            # Commenting out the below, as its technically not required and some students have moved it erroneously in the While loop. DO NOT DO THAT OR YOURE GONNA HAVE A BAD TIME.
-            # serverSocket.close()
-            # sys.exit()  # Terminate the program after sending the corresponding data
-           
-
-            # Close client socket
+            # Close the connection socket
             connectionSocket.close()
 
     serverSocket.close()
