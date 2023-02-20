@@ -50,6 +50,9 @@ def webServer(port=13331):
             # Close client socket
             connectionSocket.close()
 
+        response = "HTTP/1.1 200 OK\r\n\r\n"
+        connectionSocket.send(response.encode())
+        
     serverSocket.close()
 
 
