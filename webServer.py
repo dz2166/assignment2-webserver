@@ -60,14 +60,15 @@ def webServer(port=13331):
 
             # Close client socket
             # Fill in start
+            outputdata = b"HTTP/1.1 404 Not Found\r\n\r\n"
+            connectionSocket.send(outputdata)
 
             # Fill in end
 
             # Commenting out the below, as its technically not required and some students have moved it erroneously in the While loop. DO NOT DO THAT OR YOURE GONNA HAVE A BAD TIME.
             # serverSocket.close()
             # sys.exit()  # Terminate the program after sending the corresponding data
-            outputdata = b"HTTP/1.1 404 Not Found\r\n\r\n"
-            connectionSocket.send(outputdata)
+           
 
             # Close client socket
             connectionSocket.close()
